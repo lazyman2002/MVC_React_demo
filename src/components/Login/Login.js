@@ -1,13 +1,16 @@
+import "./Login.scss";
+
 const Login = (props) => {
     return (
-        <div className="login-container mt-3">
+        <div className="login-container">
             <div className="container">
-                <div className="row">
-                    <div className="content-left col-7">
+                <div className="row px-3 px-sm-0">
+                    <div className="content-left col-12 d-none col-sm-7 d-sm-block">
                         <div className="brand">WBAC</div>
                         <div className="detail">Learning still</div>
                     </div>
-                    <div className="content-right col-5 d-flex flex-column gap-3 py-3">
+                    <div className="content-right col-12 col-sm-5 d-flex flex-column gap-3 py-3">
+                        <div className="brand d-sm-none">WBAC</div>
                         <input
                             type="text"
                             className="form-control"
@@ -25,12 +28,14 @@ const Login = (props) => {
                             Login
                         </button>
                         <span className="text-center">
-                            Forgot your password?
+                            <a href="#" className="forgot-password">
+                                Forgot your password?
+                            </a>
                         </span>
                         <hr />
                         <div className="text-center">
                             <button className="btn btn-success">
-                                Create new accpunt
+                                Create new account
                             </button>{" "}
                         </div>
                     </div>
