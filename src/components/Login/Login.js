@@ -1,11 +1,48 @@
 import "./Login.scss";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { loginUser } from "../../services/userService";
 
-const Login = (props) => {
+const Login = ({ setAccount }) => {
+    const [keyLogin, setKeyLogin] = useState("");
+    const [password, setPassword] = useState("");
+    const defaultValid = {
+        isValidKey: true,
+        isValidPassword: true,
+    };
+    const [objCheckValid, setObjCheckValid] = useState(defaultValid);
     let history = useHistory();
     const handleRegisterClick = () => {
         history.push("/register");
+    };
+
+    const handleLogin = async () => {
+        if (!keyLogin || !password) {
+            setObjCheckValid(defaultValid);
+            if (!keyLogin) {
+                setObjCheckValid({ ...objCheckValid, isValidKey: false });
+                toast.error("Please enter Email or Phone number");
+            }
+            if (!password) {
+                setObjCheckValid({ ...objCheckValid, isValidPassword: false });
+                toast.error("Please enter password");
+            }
+            return;
+        }
+        const response = await loginUser(keyLogin, password);
+        if (response && response && response.EC === 0) {
+            let data = {
+                isAuth: true,
+                token: "fake",
+            };
+            sessionStorage.setItem("account", JSON.stringify(data));
+            setAccount(data);
+            history.push("/users");
+        } else {
+            toast.error(response.EM);
+        }
     };
     return (
         <div className="login-container">
@@ -19,17 +56,36 @@ const Login = (props) => {
                         <div className="brand d-sm-none">WBAC</div>
                         <input
                             type="text"
-                            className="form-control"
+                            className={
+                                objCheckValid.isValidKey
+                                    ? "form-control"
+                                    : "form-control is-invalid"
+                            }
                             placeholder="Email or phone number"
+                            value={keyLogin}
+                            onChange={(e) => {
+                                setKeyLogin(e.target.value);
+                            }}
                         />
                         <input
                             type="password"
-                            className="form-control"
+                            className={
+                                objCheckValid.isValidPassword
+                                    ? "form-control"
+                                    : "form-control is-invalid"
+                            }
                             placeholder="Password"
+                            value={password}
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                            }}
                         />
                         <button
                             type="submit"
                             className="btn btn-primary btn-block"
+                            onClick={() => {
+                                handleLogin();
+                            }}
                         >
                             Login
                         </button>
